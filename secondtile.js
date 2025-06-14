@@ -1310,7 +1310,7 @@ function pathLogicSelect(x,y,colorSelectorClick) {
  commonColor.length = 0;
 
   if ((difficulty.removal.value || checkSettings.paths == 2) && vPath.length && vPath.some(e => e.x == x && e.y == y && e.state && e.color != 13)) { //path clicked // && vPath.every(f => f.color < 13)
-      convertVpath(); console.log("path clicked");
+      convertVpath();
       return;} 
 
    if (colorSelectorClick) { // color select clicked, neither start, or end was locked.
@@ -1329,7 +1329,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       pEnd.lock = false;
       selectorDoubleClick(startColorSelect);
       mergePath();
-      console.log("start clicked again");
       return;}
 
     if (pEnd.length && pEnd[0] == x && pEnd[1] == y) { //end clicked again, convert end if color select allows it.
@@ -1339,7 +1338,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       pEnd.lock = false;
       selectorDoubleClick(endColorSelect);
       mergePath();
-      console.log("end clicked again");
       //check if start or end color selcet, have same color twice,
       return;}
 
@@ -1351,7 +1349,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       if (commonColor.length) { endColorSelect[0].color = startColorSelect[0].color }
       calcualtePath();
       mergePath();
-      console.log("start is locked, set end again"); 
       return;}
 
   if (valid && pEnd.lock) { //end is locked, set start again
@@ -1362,7 +1359,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       if (commonColor.length) { startColorSelect[0].color = endColorSelect[0].color }
       calcualtePath();
       mergePath();
-      console.log("end is locked, set start again");
       return;}
 
   if (valid && !pStart.length) { //no start, set start
@@ -1370,7 +1366,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       pStart = [x,y];
       colorSelect(startColorSelect,1);
       mergePath();
-      console.log("set start");
       return;}
 
   if (valid && !pEnd.length ) {  //no end, set end.
@@ -1381,14 +1376,12 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       calcualtePath();
       if ( vPath.length ) { disableColorsSelector(); }
       mergePath();
-      console.log("set end");
       return;}
   
   if (!valid || pEnd.length || pStart.length) { //some other state 0 tile been clicked, remove path.
       
       resetVpath();
       busy = true;
-      console.log("some other state 0 tile been clicked");
       return;}
 
     function colorSelect(target,origin) { //display color selector, collects the colors nearby valid tiles
@@ -1430,7 +1423,7 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       vPath.forEach(e => e.state = 3 );
       target[0].color = target[0].cs = commonColor[0].cs;
       vPath.push( target[0] );
-      console.log("common color found in ColorSelect for single tile") };
+      }
   }
  
   function disableColorsSelector() {
@@ -1439,8 +1432,8 @@ function pathLogicSelect(x,y,colorSelectorClick) {
 
   function recolorPath() { 
          let pathcolor = 13;
-         if (vPath.length && vPath.every(e => e.state) && commonColor.some(e => e.cs == nextGrid[x][y].color)) { pathcolor = startColorSelect[0].color = endColorSelect[0].color = nextGrid[x][y].color; console.log("recoloring path to a common color");} 
-    else if (!pStart.lock && !pEnd.lock && commonColor.length) { pathcolor = startColorSelect[0].color = endColorSelect[0].color = commonColor[0].cs; console.log("path unlocked, common color found") }
+         if (vPath.length && vPath.every(e => e.state) && commonColor.some(e => e.cs == nextGrid[x][y].color)) { pathcolor = startColorSelect[0].color = endColorSelect[0].color = nextGrid[x][y].color;} 
+    else if (!pStart.lock && !pEnd.lock && commonColor.length) { pathcolor = startColorSelect[0].color = endColorSelect[0].color = commonColor[0].cs;}
     vPath.forEach(e => e.color = pathcolor);
   }
 
@@ -1460,7 +1453,6 @@ function pathLogicSelect(x,y,colorSelectorClick) {
       resetColor();      
       pStart.lock = false;
       pEnd.lock = false;
-      console.log("start or end unlocked")
       }
   
     else if (thisSelector.color == 14 && thisSelector.origin == 1) {
@@ -1470,7 +1462,7 @@ function pathLogicSelect(x,y,colorSelectorClick) {
             startColorSelect[0].color = startColorSelect[0].cs = nextGrid[x][y].color; 
             pStart.lock = true;
             pEnd.lock = false;
-            console.log("start locked") }
+            }
 
     else if (thisSelector.color == 14 && thisSelector.origin == 2) { 
 
@@ -1479,7 +1471,7 @@ function pathLogicSelect(x,y,colorSelectorClick) {
              endColorSelect[0].color = endColorSelect[0].cs = nextGrid[x][y].color; 
              pStart.lock = false;
              pEnd.lock = true;
-             console.log("end locked") }
+             }
   }
 }
 
@@ -1548,7 +1540,6 @@ function validatePath() { //checks if path still connected to same colored eleme
             pStart.lock = false;
             pEnd.length = 0;
             pEnd.lock = false;
-            console.log("path is no longer valid");
             // busy = true; //being called from nextClick sets the busy
             return; }} 
 }
@@ -1726,9 +1717,9 @@ busy = true;
 function gameOver() {
 
 
-  if ( makeGrid.colorTiles == 0)  { setOver(); console.log( "no more color tiles" ); return;  }
-  if ( makeGrid.whiteTiles || makeGrid.grayTiles ) { console.log( "there are still white or gray tiles" ); return }
-  if (!checkSettings.paths && difficulty.removal.value == 0 && nextMatrix.validClusterCount == makeGrid.colorTiles) { console.log( "no paths, no more removes, all tiles are single" ); setOver(); return; }
+  if ( makeGrid.colorTiles == 0)  { setOver(); return }
+  if ( makeGrid.whiteTiles || makeGrid.grayTiles ) { return }
+  if (!checkSettings.paths && difficulty.removal.value == 0 && nextMatrix.validClusterCount == makeGrid.colorTiles) { setOver(); return; }
 
   function setOver() {
 
@@ -1756,14 +1747,14 @@ function gameOver() {
         for (let x = xSize - 1; x >= 0; x--) {
           for (let y = ySize - 1; y >= 0; y--) {
              
-            if (nextGrid[x][y].state && nextGrid[x][y].color == difficulty.removal.color ) {  console.log( "there are still valid removes" ); return }
+            if (nextGrid[x][y].state && nextGrid[x][y].color == difficulty.removal.color ) { return }
             if (checkSettings.paths && nextGrid[x][y].state) { collectColors.push(nextGrid[x][y].color) }
 
             }} 
-          if (collectColors.some((val, i) => collectColors.indexOf(val) !== i)) { console.log( "paths active, there is at least 2 of same color" ); return }
-          setOver();  console.log( "paths active, remove colors arent matching, all tiles colored different" );
+          if (collectColors.some((val, i) => collectColors.indexOf(val) !== i)) { return }
+          setOver();
           } 
-    } console.log( "there are still valid clusters" );
+    }
 }
 
 function victory() {
@@ -1878,8 +1869,8 @@ function moveSlider(e) {
 
   let newSettings = [newtileSize, makeGrid.colors, checkSettings.paths, checkSettings.fixedTiles, checkSettings.permanentTiles]
 
-  if ( newSettings.every((e, i) => e == moveSlider.prevSliderSettings[i])) { moveSlider.called = false; console.log("not called") }
-  else { moveSlider.called = true; console.log("called") }
+  if ( newSettings.every((e, i) => e == moveSlider.prevSliderSettings[i])) { moveSlider.called = false; }
+  else { moveSlider.called = true; }
 }
 
 // 0 -> 1 - reload
