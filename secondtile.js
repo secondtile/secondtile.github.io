@@ -54,7 +54,7 @@
 
   checkSettings.fixedTiles = 0; // unmovable tiles, fixed tiles, tiles that dont fall with a better name
   checkSettings.permanentTiles = 0; //tiles that cant be removed.
-  checkSettings.paths = 1;
+  checkSettings.paths = 0;
   checkSettings.percent = ["off","active","unlocked" ]
 
   moveSlider.called = 0;
