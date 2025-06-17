@@ -48,7 +48,7 @@
   writeScore.score = 0;
   
   difficulty.removal = { value:0,color:0 }
-  difficulty.setting = 4; // 1: every 3 tile let you remove a single one. //2 same color as last 3 tiles //3 removes limited by number of colors //4 same, but also limited by color  last 3tile //5 no removes at all.
+  difficulty.setting = 3; // 1: every 3 tile let you remove a single one. //2 same color as last 3 tiles //3 removes limited by number of colors //4 same, but also limited by color  last 3tile //5 no removes at all.
   difficulty.verticalMove = true;
   
 
