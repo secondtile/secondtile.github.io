@@ -461,7 +461,7 @@ if (!nightmode) {
   levelSprite.src = 'levels-n.png';
   
   nightmode = true; 
-  window.parent.parentCallback();
+  if (window.location != window.parent.location) { window.parent.parentCallback(); }
   }
 
 else {
@@ -473,7 +473,7 @@ else {
     levelSprite.src = 'levels.png';
   
   nightmode = false; 
-  window.parent.parentCallback();
+  if (window.location != window.parent.location) { window.parent.parentCallback(); }
   }
 }
 
@@ -2377,17 +2377,45 @@ function shuffle(a) {
   return a;
 }
 
-//not finished
-function demo() {
+var demoTimer;
+var demoInt;
+//why play when the game can play itself.
+async function demo(timer,restart) {
 
-  let rndcord = {};
+  demoInt = timer
+  if (restart) {  
+  gameoverBox.state = 3;
+  newGame();
+  await until(() => makeGrid.loadTiles == xSize * ySize); }
+  demoTimer = setInterval(removeTile, timer);
+}
 
-  rndcord.y = Math.round(Math.random() * nextGrid.length )
-  rndcord.x = Math.round(Math.random() * nextGrid[0].length )
+const until = (predFn) => {
+  const poll = (done) => (predFn() ? done() : setTimeout(() => poll(done), 500));
+  return new Promise(poll);
+};
 
-  nextClick(rndcord)
-  }
+function removeTile() { 
 
+  if (makeGrid.colorTiles == 0) { 
+      clearInterval(demoTimer); 
+      demo(demoInt,true);
+      return;
+  } 
+
+  difficulty.setting = 1;
+  difficulty.removal.value = 3;
+  let rndcord = [];
+
+     for (let x = 0; x < xSize; x++) {
+    for (let y = 0; y < ySize; y++) {
+
+      if (nextGrid[x][y].state && nextGrid[x][y].color < 13) {rndcord.push([x,y])}
+    }}
+
+  let randomTile = rndcord[ Math.floor(Math.random() * rndcord.length ) ]  
+  nextClick(randomTile[0],randomTile[1])
+}
 
 bgFill.position = 0;
 bgFill.animPosition = 0;
